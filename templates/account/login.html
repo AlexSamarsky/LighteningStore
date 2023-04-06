@@ -1,0 +1,168 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load socialaccount %}
+
+
+    {% block title %}
+    <title>Giriş Yap  >>>  {{setting.company}}</title>
+    {% endblock title %}
+
+    {% block head %}
+    <link rel="shortcut icon" type="image/x-icon" href="{{setting.icon.url}}">
+    {% endblock head %}
+
+    <!-- Topbar Start -->
+    {% include 'includes/_topbar.html' %}
+
+    <div class="mt-3">
+        <a class="mt-3" href="{% url 'password_reset' %}"><i>Şifrenizi mi unuttunuz?</i></a>
+    </div>
+    <!-- Topbar End -->
+    {% block content %}
+    {% include 'includes/_navbar.html' %}
+
+    <!-- Breadcrumb Start -->
+    <div class="container-fluid">
+        <div class="row px-xl-5">
+            <div class="col-12">
+                <nav class="breadcrumb bg-light mb-30">
+                    <a class="breadcrumb-item text-dark" href="{% url 'index' %}">Anasayfa</a>
+                    <span class="breadcrumb-item active">Giriş Yap</span>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+
+
+    <div class="form-content my-3 p-3">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-5">
+                    <div class="card shadow-lg border-0 rounded-lg mt-0 mb-3">
+                        <div class="card-header justify-content-center">
+                            <div id="error_div"></div>
+                          <h3 class="font-weight-light my-4 text-center">Merhaba,</h3>
+                          <p class="font-weight-light my-4 text-center">YıldırımStore'ye giriş yap veya hesap oluştur, indirimleri kaçırma!</p>
+                        </div>
+                        {% if form.errors %}
+                            <div class="alert-danger alert-dismissible text-center list-display-none" role="alert">
+                                <div id="form_errors">
+                                    {% for key, value in form.errors.items %}
+                                        <strong>{{ value }}</strong>
+                                    {% endfor %}
+                                </div>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <form method="POST" class="form">
+                                {% csrf_token %}
+                                
+                                <div class="form-row">
+                                    <div class="col-md-10 offset-md-1 text-center">
+                                        <div class="form-group mt-0 mb-3">
+                                          
+                                            <div class="form-outline form-white mb-4">
+                                                <div class="form__item">
+                                                    <label class="form-label fs-5 mb-0">Kullanıcı Adı</label>
+                                                    {{ form.login }}
+                                                </div>
+
+                                        <label class="form-label fs-5 mb-0">Parola</label>
+                                        <div class="form__item form__item--flex mt-0">
+                                                <span class="light"></span> <!-- Işık Efektini istemezsen bu span etiketini kaldırabilirsin -->
+                                                <div class="input-group">
+                                                {{ form.password }}
+                                                <div class="form__icon input-group-text bg-transparent input-group-append">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                                <label class="form-label fs-5 mx-2">Beni Hatırla</label>
+                                                {{ form.remember }}
+                                            </div>
+
+                                        <!-- <small class=" btn float-right py-3 showPasswordToggle">GÖSTER</small> -->
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                
+                                <div class="form-row">
+                                  <div class="col-md-10 offset-md-1">
+                                    <div class="form-group  mb-3">
+                                        <button type="submit" class="col-md-12 btn btn-dark">
+                                            Giriş Yap
+                                        </button>
+                                    </div>
+                                 </div>
+                               </div>
+
+                         <div class="form-row">
+                            <div class="col-md-10 offset-md-1">
+                                <div class="form-group mb-3">
+                            <form action="{% provider_login_url 'google' %}?next=/" method="post">
+                                {% csrf_token %}
+                            <button class="btn btn-dark col-md-12">
+                                <a class="text-decoration-none" href="{% provider_login_url 'google' %}?next=/">
+                                    <i class="fab fa-google"></i>
+                                    Google ile giriş
+                                </a>
+                            </button>
+                            </form>
+                        </div>
+                        </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-10 offset-md-1">
+                                <div class="form-group mb-1">
+                            <form action="{% provider_login_url 'github' method="oauth2"  %}" method="post">
+                                {% csrf_token %}
+                            <button class="btn btn-dark col-md-12">
+                                <a class="text-decoration-none" href="{% provider_login_url 'github' method="oauth2" %}">
+                                    <i class="fa fa-github fa-fw"></i>
+                                    GitHub ile giriş
+                                </a>
+                            </button>
+                        </form>
+                        </div>
+                        </div>
+                        </div>
+                        </form>
+                        </div>
+                        <div class="card-footer text-center">
+                            <p>
+                                Heabınız yok mu?
+                                <a href="{% url 'account_signup' %}" class="text-black-50 text-decoration-underline">Hemen Kayıt Olun</a><br><br>
+                                <a href="{% url 'account_reset_password' %}" class="text-black-50 text-decoration-underline">Şifremi unuttum</a><br>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+  </div>
+
+<!--   <script type="text/javascript">
+    function reveal()
+    {
+    if(document.getElementById('box').checked)
+       {document.getElementById("pw").type='text';}
+    else
+    document.getElementById("pw").type='password';
+    }
+    </script>  -->
+
+      <!-- Footer Start -->
+      {% include 'includes/_footer.html' %}
+      <!-- Footer End -->
+  
+      {% endblock content %}

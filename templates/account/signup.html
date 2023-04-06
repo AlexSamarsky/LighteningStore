@@ -1,0 +1,146 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load socialaccount %}
+
+    {% block title %}
+    <title>Üye Ol  >>>  {{setting.company}}</title>
+    {% endblock title %}
+
+    {% block head %}
+    <link rel="shortcut icon" type="image/x-icon" href="{{setting.icon.url}}">
+    {% endblock head %}
+
+    <!-- Topbar Start -->
+    {% include 'includes/_topbar.html' %}
+    <!-- Topbar End -->
+    {% block content %}
+    {% include 'includes/_navbar.html' %}
+
+    <!-- Breadcrumb Start -->
+    <div class="container-fluid">
+        <div class="row px-xl-5">
+            <div class="col-12">
+                <nav class="breadcrumb bg-light mb-30">
+                    <a class="breadcrumb-item text-dark" href="{% url 'index' %}">Anasayfa</a>
+                    <span class="breadcrumb-item active">Üye Ol</span>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <div class="form-content my-3 p-3">
+        <div class="container">
+            <div class="row justify-content-center">
+               
+                <div class="col-lg-5">
+                    <div class="card shadow-lg border-0 rounded-lg mt-0 mb-3">
+                        <div class="card-header justify-content-center">
+                           
+                          <h3 class="font-weight-medium my-4 text-center">Merhaba,</h3>
+                          <p class="font-weight-light my-4 text-center">YıldırımStore'ye giriş yap veya hesap oluştur, indirimleri kaçırma!</p>
+                        </div>
+
+                        {% if form.errors %}
+                            <div class="alert-danger alert-dismissible text-center list-display-none" role="alert">
+                                <div id="form_errors">
+                                    {% for key, value in form.errors.items %}
+                                        <strong>{{ value }}</strong>
+                                    {% endfor %}
+                                </div>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endif %}
+
+                            {% if form.errors %}
+                                <ul class="errorlist">
+                                    <li>{% blocktrans with provider_name=account.get_provider.name site_name=site.name %}
+                                        NOT: Halihazırda bir{{site_name}} hesabı ve hesabınızı bağlamak istiyorum {{provider_name}} hesap lütfen tıklayın {% endblocktrans %}
+                                    <a href="{% url 'socialaccount_connections' %}">{% trans " Burada" %}</a> önce oturum açmak için.</li>
+                                </ul>
+                            {% endif %}
+
+                        <div class="card-body">
+                            <form method="POST" class="form">
+                                {% csrf_token %}
+                                
+                                <div class="form-row">
+                                    <div class="col-md-10 offset-md-1 ">
+                                        <div class="form-group mt-0 mb-1">
+                                            <div class=" form-outline form-white mb-4">
+                                                <div class="form__item">
+                                                    
+                                                    <label class="form-label fs-5">Kullanıcı Adı</label>
+                                                    {{ form.username }}
+                                                    
+                                                </div>
+
+                                                <div class="form__item">
+                                                    <label class="form-label fs-5">E-Posta</label>
+                                                    {{ form.email }}
+                                                    
+                                                </div>
+
+                                               
+                                                <label class="form-label fs-5 mb-0">Parola</label>
+                                                <div class="form__item form__item--flex mt-0">
+                                                    <span class="light"></span> <!-- Işık Efektini istemezsen bu span etiketini kaldırabilirsin -->
+                                                    <div class="input-group password-group">
+                                                        {{ form.password1 }}
+                                                        
+                                                        <div class="form__icon input-group-text bg-transparent input-group-append">
+                                                            <i class="fa-solid fa-eye"></i>
+                                                        </div>
+                                                </div>
+                                              </div>
+                                              
+                                            <label class="form-label fs-5 mb-0">Parola Tekrarı</label>
+                                            <div class="form__item1 form__item1--flex mt-0">
+                                                <span class="light1"></span> <!-- Işık Efektini istemezsen bu span etiketini kaldırabilirsin -->
+                                                <div class="input-group password-group">
+                                                    {{ form.password2 }}
+                                                    <div class="form__icon1 input-group-text bg-transparent input-group-append">
+                                                        <i class="fa-solid fa-eye"></i>
+                                                    </div>
+                                            </div>
+                                        </div> 
+                                            </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                
+                                <div class="form-row">
+                                  <div class="col-md-10 offset-md-1">
+                                    <div class="form-group mt-0 mb-1">
+                                        <button type="submit" class="col-md-12 btn btn-lg btn-dark">
+                                            Kayıt Ol
+                                        </button>
+                                    </div>
+                                 </div>
+                               </div>
+                            </form>
+                        </div>
+                        <div class="card-footer text-dark text-center">
+                            <div class="">
+                               <p class="text-black-50">Zaten hesabın var mı? <a href="{% url 'account_login' %}" class="text-black-50 text-decoration-underline">Giriş yap</a></p><br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+  </div>
+
+
+      <!-- Footer Start -->
+      {% include 'includes/_footer.html' %}
+      <!-- Footer End -->
+  
+      {% endblock content %}
+

@@ -1,0 +1,119 @@
+{% extends "index.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load socialaccount %}
+
+{% block title %}
+<title>E-posta Adreslerin  >>>  {{request.user.username}}</title>
+{% endblock title %}
+
+{% block head %}
+<link rel="shortcut icon" type="image/x-icon" href="{{setting.icon.url}}">
+{% endblock head %}
+
+{% block content %}
+{% include 'includes/_navbar.html' %}
+{% include 'includes/__messages.html' %}
+
+
+<div class="form-content p-5 col-12 w-100">
+  <div class="container">
+      <div class="row justify-content-center">
+          <div class="col-lg-12">
+              <div class="card shadow-lg border-0 rounded-lg justify-content-center text-center py-5">
+                  <h1>{% trans "E-mail Addresses" %}</h1>
+              {% if user.emailaddress_set.all %}
+              <p>{% trans 'Aşağıdaki e-posta adresleri hesabınızla ilişkilidir:' %}</p>
+
+              <form action="{% url 'account_email' %}" class="email_list" method="post">
+              {% csrf_token %}
+              <fieldset class="blockLabels">
+
+                {% for emailaddress in user.emailaddress_set.all %}
+              <div class="ctrlHolder">
+                    <label for="email_radio_{{forloop.counter}}" class="{% if emailaddress.primary %}primary_email{%endif%}">
+
+                    <input class="" id="email_radio_{{forloop.counter}}" type="radio" name="email" {% if emailaddress.primary or user.emailaddress_set.count == 1 %}checked="checked"{%endif %} value="{{emailaddress.email}}"/>
+
+              {{ emailaddress.email }}
+                  {% if emailaddress.verified %}
+                  <span class="verified fs-5 text-success text-decoration-underline">{% trans "doğrulandı" %}</span>
+                  {% else %}
+                  <span class="unverified fs-5 text-danger text-decoration-underline">{% trans "Doğrulanmamış" %}</span>
+                  {% endif %}
+                    {% if emailaddress.primary %}<span class="primary">{% trans "Birincil" %}</span>{% endif %}
+              </label>
+              </div>
+                {% endfor %}
+
+              <div class="buttonHolder mt-3">
+                    <button class="btn btn-primary  secondaryAction" type="submit" name="action_primary" >{% trans 'Birincil yap' %}</button>
+                    <button class="btn btn-info  secondaryAction" type="submit" name="action_send" >{% trans 'Onaylamayı tekrar gönder' %}</button>
+                    <button class="btn btn-danger  primaryAction" type="submit" name="action_remove" >{% trans 'Sil' %}</button>
+              </div>
+
+              </fieldset>
+              </form>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="form-content p-5 col-12 ">
+  <div class="container">
+      <div class="row justify-content-center">
+          <div class="col-lg-12">
+              <div class="card shadow-lg border-0 rounded-lg  justify-content-center text-center py-5">
+                {% else %}
+                <p class="fs-5 text-danger text-decoration-underline"><strong>{% trans 'Warning:'%}</strong> {% trans "Şu anda kurulu bir e-posta adresiniz yok. Bildirim alabilmek, şifrenizi yenileyebilmek için bir e-posta adresi eklemelisiniz." %}</p>
+
+                {% endif %}
+                  {% if can_add_email %}
+                    <h2>{% trans "Add E-mail Address" %}</h2>
+
+                    {% if form.errors %}
+                    <div class="alert-danger alert-dismissible" role="alert">
+                        <div id="form_errors">
+                            {% for key, value in form.errors.items %}
+                                <strong>{{ value }}</strong>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+                <div class="card-body">
+                    <form method="post" action="{% url 'account_email' %}" class="add_email">
+                        {% csrf_token %}
+                        {{ form | crispy }}
+                        <button class="btn btn-success mt-3" name="action_add" type="submit">{% trans "Add E-mail" %}</button>
+                    </form>
+                  </div>
+                  {% endif %}
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% include 'includes/_footer.html' %}
+{% endblock %}
+
+{% block extra_body %}
+<script type="text/javascript">
+(function() {
+  var message = "{% trans 'Seçilen e-posta adresini gerçekten kaldırmak istiyor musunuz?' %}";
+  var actions = document.getElementsByClassName('action_remove');
+  if (actions.length) {
+    actions[0].addEventListener("click", function(e) {
+      if (! confirm(message)) {
+        e.preventDefault();
+      }
+    });
+  }
+})();
+</script>
+{% endblock %}
